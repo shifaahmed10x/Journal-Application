@@ -23,6 +23,6 @@ public class User {
     private String password;
     @Id
     private ObjectId id;
-   @DBRef
+   @DBRef // "Don't store the whole JournalEntry object here. Store only references (IDs) to those journal documents."
     private List<JournalEntry> journalEntries = new ArrayList<>();
 }
