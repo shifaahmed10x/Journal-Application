@@ -17,12 +17,13 @@ import java.util.List;
 @Data
 public class User {
     @Indexed(unique = true)// indexed - fast searching . unique = contain unique username
-   @NonNull
+    @NonNull
     private String username;
     @NonNull
     private String password;
     @Id
     private ObjectId id;
-   @DBRef // "Don't store the whole JournalEntry object here. Store only references (IDs) to those journal documents."
+    @DBRef // "Don't store the whole JournalEntry object here. Store only references (IDs) to those journal documents."
     private List<JournalEntry> journalEntries = new ArrayList<>();
+    private List<String> roles = new ArrayList<>();
 }
