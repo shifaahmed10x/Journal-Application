@@ -32,7 +32,7 @@ public class JournalEntryController {
 
       List<JournalEntry> all = user.getJournalEntries();
 
-      return new ResponseEntity<>(all,HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>(all,HttpStatus.OK);
     }
 
     @PostMapping
@@ -60,14 +60,14 @@ public class JournalEntryController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/id//{myId}")
+    @DeleteMapping("/id/{myId}")
     public ResponseEntity<?> deleteJournalEntryById(@PathVariable ObjectId myId, Authentication authentication){
         String loggedInUsername = authentication.getName();
         journalEntryService.deleteById(myId,loggedInUsername);
          return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/id//{id}")
+    @PutMapping("/id/{id}")
     public ResponseEntity<?> updateJournalEntryById(
             @PathVariable ObjectId id,
             @RequestBody JournalEntry newEntry,
@@ -81,7 +81,7 @@ public class JournalEntryController {
         if (updatedEntry == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(updatedEntry,HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(updatedEntry,HttpStatus.OK);
 
     }
 }

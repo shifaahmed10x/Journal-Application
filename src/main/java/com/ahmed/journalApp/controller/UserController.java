@@ -1,6 +1,9 @@
 package com.ahmed.journalApp.controller;
+import com.ahmed.journalApp.entity.MyUserResponse;
 import com.ahmed.journalApp.entity.User;
+import com.ahmed.journalApp.entity.UserResponse;
 import com.ahmed.journalApp.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,13 +21,25 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public List<User> getAllUsers(){
-        return userService.getAll();
+    public ResponseEntity<MyUserResponse> getMyUser(Authentication authentication){
+        String loggedInUser = authentication.getName();
+        User user = userService.findByUsername(loggedInUser);
+        if(user == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        MyUserResponse myuserResponse = new MyUserResponse(user.getUsername(),
+                                                           user.getRoles(),
+                                                           user.getJournalEntries());
+        return new ResponseEntity<>(myuserResponse,HttpStatus.OK);
     }
 
     @PostMapping
-    public void createUser(@RequestBody User user){
+    public ResponseEntity<String> createUser(@Valid  @RequestBody User user ){
+        if(userService.findByUsername(user.getUsername()) !=null){
+            return new ResponseEntity<>("Username already exits",HttpStatus.CONFLICT);
+        }
         userService.saveNewUser(user);
+        return new ResponseEntity<>("User created Successfully",HttpStatus.OK);
     }
 
     @PutMapping()
