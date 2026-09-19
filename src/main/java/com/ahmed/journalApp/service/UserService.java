@@ -29,10 +29,21 @@ public class UserService {
             userRepo.save(user);
     }
 
-    public void saveNewUser(User user){
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(List.of("USER"));
-        userRepo.save(user);
+    public boolean saveNewUser(User user){
+        try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRoles(List.of("USER"));
+            userRepo.save(user);
+            return true;
+        } catch (Exception e){
+            log.error("Error occured for {} and reason : {}" ,user.getUsername(),e.getCause());
+            log.info("Info  occured for {} and reason : {}" ,user.getUsername());
+            log.debug("Debug  occured for {} and reason : {}" ,user.getUsername());
+            log.trace("Trace occured for {} and reason : {}" ,user.getUsername());
+
+            return  false;
+        }
+
     }
     public void saveNewAdmin(User user){
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -60,7 +71,7 @@ public class UserService {
         userInDB.setPassword(passwordEncoder.encode(newPassword));
         userRepo.save(userInDB);
     }
-    @Transactional
+
     public void deleteByUsername(String username) {
         User user = userRepo.findByUsername(username);
         if(user == null){
